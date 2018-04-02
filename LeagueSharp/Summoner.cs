@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Text;
+using System.Runtime.Serialization;
 using Newtonsoft.Json.Linq;
 
 namespace LeagueSharp
@@ -9,9 +9,7 @@ namespace LeagueSharp
     class Summoner
     {
         #region Private Variables
-        private const string urlPrefix = "https://kr.api.riotgames.com/";
-        private static readonly string API_KEY = File.ReadAllText(@"D:\Test\key.txt");
-
+        
         private int profileIconId;
         private string name;
         private long summonerLevel;
@@ -26,7 +24,7 @@ namespace LeagueSharp
         public long SummonerLevel { get => summonerLevel; }
         public long RevisionDate { get => revisionDate; }
         public long Id { get => id; }
-        public long AcoundId { get => accountId; }
+        public long AccountId { get => accountId; }
         #endregion
 
         private Summoner(int profileIconId, string name, long summonerLevel, long revisionDate, long id, long accountId)
@@ -39,14 +37,18 @@ namespace LeagueSharp
             this.accountId = accountId;
         }
 
-        public static Summoner GetSummonerByName(string searchingName)
-        {
-            var requestURL = urlPrefix + @"/lol/summoner/v3/summoners/by-name/" + searchingName;
+        public static Summoner GetSummonerByName(string searchingName) => ExtractFromURL(LeagueSharp.urlPrefix + @"lol/summoner/v3/summoners/by-name/" + searchingName);
 
+        public static Summoner GetSummonerByAccount(long SearchingId) => ExtractFromURL(LeagueSharp.urlPrefix + @"lol/summoner/v3/summoners/by-account/" + SearchingId);
+
+        public static Summoner GetSummonerBySummonerID(long SearchingId) => ExtractFromURL(LeagueSharp.urlPrefix + @"lol/summoner/v3/summoners/" + SearchingId);
+
+        private static Summoner ExtractFromURL(string requestURL)
+        {
             string s = string.Empty;
             using (WebClient client = new WebClient())
             {
-                client.QueryString.Add("api_key", API_KEY);
+                client.QueryString.Add("api_key", LeagueSharp.API_KEY);
                 client.Encoding = Encoding.UTF8;
                 s = client.DownloadString(requestURL);
             }

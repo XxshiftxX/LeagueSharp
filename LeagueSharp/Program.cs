@@ -10,9 +10,17 @@ namespace LeagueSharp
     {
         static void Main(string[] args)
         {
-            Summoner me = Summoner.GetSummonerByName(Console.ReadLine());
+            Summoner s = Summoner.GetSummonerByName(Console.ReadLine());
 
-            Console.WriteLine($"Lv.{me.SummonerLevel}) {me.Name} ({me.Id})");
+            Console.WriteLine($"Lv. {s.SummonerLevel}) {s.Name} (유저 ID : {s.Id})");
+
+            Summoner sCopy = Summoner.GetSummonerByAccount(s.AccountId);
+
+            Console.WriteLine($"Lv. {sCopy.SummonerLevel}) {sCopy.Name} (유저 ID : {sCopy.Id})");
+
+            sCopy = Summoner.GetSummonerBySummonerID(s.Id);
+
+            Console.WriteLine($"Lv. {sCopy.SummonerLevel}) {sCopy.Name} (유저 ID : {sCopy.Id})");
         }
     }
 }
